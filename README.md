@@ -27,6 +27,8 @@ Third argument, optional, is the parameter type array.
 
 After assembly, the messages field (a List of SMessage) contains messages about the assembly and the method field contains the resulting method. It's up to you to cast it to whatever you've asked to make.
 
+It's fast enough. >100kl/s on first invocation, >1Ml/s when the types and methods are cached from previous inputs.
+
 # Unsupported
 Local variables, calli opcode
 
