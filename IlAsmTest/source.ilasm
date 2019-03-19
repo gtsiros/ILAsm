@@ -1,6 +1,2 @@
-    ldarg.0
-    ldc.i4.1
-    add
-    conv.i
-    newarr Int32
+
     ret

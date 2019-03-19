@@ -190,6 +190,8 @@ Public Class TILAsm
 
             Dim ig As ILGenerator = dm.GetILGenerator
 
+
+            '' horrible, but so far necessary. Every possible type handled by Reflection.Emit(OpCode, <T>)
             Dim _Byte As Byte = 0
             Dim _Int16 As Int16 = 0
             Dim _Int32 As Int32 = 0
@@ -246,7 +248,7 @@ Public Class TILAsm
                 Dim opc As OpCode = opcodeCache(m.ToLower)
 
                 If opc.Size = 0 Then Me.Log(i, EMessage.invalid_mnemonic, ESeverity.Failure)
-                Debug.WriteLine(OpcDump(opc))
+
                 Dim argCount As Int32 = tokens.Length - iHasLabel - 1 '' -1 because we know there is an opcode.
                 Dim firstArgIndex As Int32 = iHasLabel + 1
                 If opc.OperandType = OperandType.InlineNone Then
@@ -287,7 +289,8 @@ Public Class TILAsm
                 End If
 
                 Dim arg As String = tokens(firstArgIndex)
-
+                '' for now i have no idea how to handle this.
+                '' in the previous iteration i used reflection and a cache of each particular Emit overload.
                 Dim ok As Boolean = False
                 Select Case opc.OperandType
                     Case OperandType.ShortInlineI
@@ -374,14 +377,14 @@ Public Class TILAsm
 #End If
     End Sub
 
-    Private Sub Log(i As Int32, m As EMessage, Optional s As ESeverity = ESeverity.Information, Optional throwOnFailure As Boolean = True)
-        Me.messages.Add(New SMessage With {.lineIndex = i + 1, .msg = m, .severity = s})
-        If s > ESeverity.Warning AndAlso throwOnFailure Then Throw New TBadSourceException(i + 1, m, s)
-    End Sub
-
     '' just for convenience
     Sub New(source As String, Optional returnType As Type = Nothing, Optional parameterTypes() As Type = Nothing)
         Me.New(source.Split({cr, lf}, StringSplitOptions.RemoveEmptyEntries), returnType, parameterTypes)
+    End Sub
+
+    Private Sub Log(i As Int32, m As EMessage, Optional s As ESeverity = ESeverity.Information, Optional throwOnFailure As Boolean = True)
+        Me.messages.Add(New SMessage With {.lineIndex = i + 1, .msg = m, .severity = s})
+        If s > ESeverity.Warning AndAlso throwOnFailure Then Throw New TBadSourceException(i + 1, m, s)
     End Sub
 
 End Class

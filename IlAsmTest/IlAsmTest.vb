@@ -12,13 +12,13 @@ Public Module IlAsmTest
     Public Sub Main()
 
 
-        Dim a As New TIlAsm.TILAsm(IO.File.ReadAllText("source.ilasm"), GetType(Int32()), {GetType(Int32)})
+        Dim a As New TIlAsm.TILAsm(IO.File.ReadAllText("source.ilasm"))
 
         If a.messages.Count > 0 Then Debug.WriteLine(String.Join(cr & lf, a.messages))
 
         If a.method IsNot Nothing Then
             Try
-                Dim eh As Int32() = DirectCast(a.method, Func(Of Int32, Int32()))(3)
+                DirectCast(a.method, Action)()
             Catch ex As Exception
                 Debug.WriteLine(ex.Message)
             End Try
